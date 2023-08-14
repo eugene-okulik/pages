@@ -10,7 +10,7 @@ jobs:
       - name: Check out source repository
         uses: actions/checkout@v3
       - name: Create HTML file
-        run: mkdir site && echo "<html><body>Hello World!</html></body>" > _site/index.html
+        run: mkdir _site && echo "<html><body>Hello World!</html></body>" > _site/index.html
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
       - name: Deploy to GitHub Pages
