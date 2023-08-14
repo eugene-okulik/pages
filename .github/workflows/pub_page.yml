@@ -1,0 +1,20 @@
+name: Create static page
+
+on: [push]
+
+jobs:
+  create-page:
+    runs-on: ubuntu-latest
+    name: Pages
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - name: Create HTML file
+        run: mkdir site && echo "<html><body>Hello World!</html></body>" > site/index.html
+      - name: Archive html file
+        run: tar -czvf github-pages site
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1.2.9
