@@ -12,7 +12,7 @@ jobs:
       - name: Create HTML file
         run: mkdir site && echo "<html><body>Hello World!</html></body>" > site/index.html
       - name: Archive html file
-        run: tar -czvf github-pages site
+        run: ls && tar -czvf github-pages site
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
       - name: Deploy to GitHub Pages
