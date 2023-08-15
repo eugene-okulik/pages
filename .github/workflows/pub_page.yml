@@ -28,7 +28,7 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.MY_PERSONAL_TOKEN }}"
           -H "X-GitHub-Api-Version: 2022-11-28"
           https://api.github.com/repos/eugene-okulik/pages/actions/artifacts/$ART_ID/zip -o artifacts.zip
-      - run: unzip artifacts.zip && ls
+      - run: mkdir allure-result && unzip artifacts.zip -d allure-result && ls
       - run: python -m pytest --alluredir=allure-result
       - run: ls allure-result
       - name: Archive allure results
@@ -38,7 +38,7 @@ jobs:
           path:
             allure-result
           retention-days: 5
-      - run: unzip artifacts.zip && ls
+      - run: ls
       - uses: actions/setup-java@v3
         with:
           distribution: 'microsoft' # See 'Supported distributions' for available options
