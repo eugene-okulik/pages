@@ -19,10 +19,6 @@ jobs:
           python-version: '3.10' 
       - run: pip install -r requirements.txt
       - run: python -m pytest --alluredir=allure-result
-  generate-report:
-    runs-on: ubuntu-latest
-    name: Report
-    steps:
       - run: ls
       - run: sudo apt-get install openjdk-17-jdk 
       - run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.22.4/allure-2.22.4.tgz && sudo tar -zxvf allure-2.22.4.tgz -C /opt/ && sudo ln -s /opt/allure-2.22.4/bin/allure /usr/bin/allure
