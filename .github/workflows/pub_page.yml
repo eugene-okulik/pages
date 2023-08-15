@@ -32,14 +32,15 @@ jobs:
       - run: python -m pytest --alluredir=allure-result
       - run: ls allure-result && ls
       - name: Archive allure results
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: allure-result
           path:
             allure-result
           retention-days: 5
-      - run: ls
       - uses: actions/setup-java@v3
+        if: always()
         with:
           distribution: 'microsoft' # See 'Supported distributions' for available options
           java-version: '17'
