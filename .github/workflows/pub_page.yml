@@ -39,7 +39,7 @@ jobs:
           https://api.github.com/repos/eugene-okulik/pages/actions/artifacts/$REPORT_ID/zip -o old_report.zip
       - run: mkdir allure-result && unzip artifacts.zip -d allure-result && ls && ls allure-result
       - run: mkdir old-report report_artifact && unzip old_report.zip -d old-report && ls && ls old-report && tar -xvf old-report/artifact.tar -C report_artifact
-      - run: cp report_artifact/history/history.json report_artifact/history/history-trend.json allure-result && ls allure-result
+      - run: cp -r report_artifact/history allure-result && ls allure-result
       - run: python -m pytest --alluredir=allure-result
       - name: Archive allure results
         if: always()
