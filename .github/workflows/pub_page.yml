@@ -20,10 +20,11 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python -m pytest --alluredir=allure-result
   generate-report:
-    runs-on: openjdk:17
+    runs-on: ubuntu-latest
     name: Report
     steps:
       - run: ls
+      - run: apt-get install openjdk-17-jdk 
       - run: wget https://github.com/allure-framework/allure2/releases/download/2.22.4/allure-2.22.4.tgz && tar -zxvf allure-2.22.4.tgz -C /opt/ && ln -s /opt/allure-2.22.4/bin/allure /usr/bin/allure
       - run: allure generate -c allure-result -o _site
       - name: Upload Pages artifact
