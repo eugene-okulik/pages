@@ -23,6 +23,7 @@ jobs:
     runs-on: frankescobar/allure-docker-service
     name: Report
     steps:
+      - run: ls
       - run: allure generate -c allure-result -o _site
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
