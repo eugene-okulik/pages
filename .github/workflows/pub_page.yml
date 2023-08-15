@@ -47,6 +47,14 @@ jobs:
         if: always()
       - run: allure generate -c allure-result -o _site
         if: always()
+      - name: Archive generated report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-report
+          path:
+            _site
+          retention-days: 5
       - name: Upload Pages artifact
         if: always()
         uses: actions/upload-pages-artifact@v2
