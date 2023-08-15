@@ -25,7 +25,7 @@ jobs:
     steps:
       - run: ls
       - run: sudo apt-get install openjdk-17-jdk 
-      - run: wget https://github.com/allure-framework/allure2/releases/download/2.22.4/allure-2.22.4.tgz && tar -zxvf allure-2.22.4.tgz -C /opt/ && ln -s /opt/allure-2.22.4/bin/allure /usr/bin/allure
+      - run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.22.4/allure-2.22.4.tgz && sudo tar -zxvf allure-2.22.4.tgz -C /opt/ && sudo ln -s /opt/allure-2.22.4/bin/allure /usr/bin/allure
       - run: allure generate -c allure-result -o _site
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
