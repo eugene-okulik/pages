@@ -30,7 +30,6 @@ jobs:
           https://api.github.com/repos/eugene-okulik/pages/actions/artifacts/$ART_ID/zip -o artifacts.zip
       - run: mkdir allure-result && unzip artifacts.zip -d allure-result && ls && ls allure-result
       - run: python -m pytest --alluredir=allure-result
-      - run: ls allure-result && ls
       - name: Archive allure results
         if: always()
         uses: actions/upload-artifact@v3
@@ -45,9 +44,13 @@ jobs:
           distribution: 'microsoft' # See 'Supported distributions' for available options
           java-version: '17'
       - run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.22.4/allure-2.22.4.tgz && sudo tar -zxvf allure-2.22.4.tgz -C /opt/ && sudo ln -s /opt/allure-2.22.4/bin/allure /usr/bin/allure
+        if: always()
       - run: allure generate -c allure-result -o _site
+        if: always()
       - name: Upload Pages artifact
+        if: always()
         uses: actions/upload-pages-artifact@v2
       - name: Deploy to GitHub Pages
+        if: always()
         id: deployment
         uses: actions/deploy-pages@v1.2.9
