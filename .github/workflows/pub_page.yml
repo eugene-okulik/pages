@@ -37,7 +37,7 @@ jobs:
           path:
             allure-result
           retention-days: 5
-      - run: ls
+      - run: unzip artifacts.zip && ls
       - uses: actions/setup-java@v3
         with:
           distribution: 'microsoft' # See 'Supported distributions' for available options
