@@ -8,14 +8,22 @@ permissions:
   id-token: write
 
 jobs:
-  create-page:
+  run-tests:
     runs-on: ubuntu-latest
-    name: Pages
+    name: Test
     steps:
       - name: Check out source repository
         uses: actions/checkout@v3
-      - name: Create HTML file
-        run: mkdir _site && echo "<html><body>Hello World!</html></body>" > _site/index.html
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip install -r requirements.txt
+      - run: python -m pytest --alluredir=allure-result
+  generate-report:
+    runs-on: frankescobar/allure-docker-service
+    name: Report
+    steps:
+      - run: allure generate -c allure-result -o _site
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v2
       - name: Deploy to GitHub Pages
