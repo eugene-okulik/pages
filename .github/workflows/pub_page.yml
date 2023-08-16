@@ -1,4 +1,4 @@
-name: Create static page
+name: Run tests and generate report
 
 on: [push]
 
@@ -8,16 +8,13 @@ permissions:
   id-token: write
 
 jobs:
-  run-tests:
+  download-history:
     runs-on: ubuntu-latest
-    name: Test
+    name: Download history
     steps:
-      - name: Check out source repository
-        uses: actions/checkout@v3
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10' 
-      - run: pip install -r requirements.txt
       - run: > 
           ART_ID=$(curl -L -H "Accept: application/vnd.github+json" 
           -H "X-GitHub-Api-Version: 2022-11-28" 
@@ -40,36 +37,66 @@ jobs:
       - run: mkdir allure-result && unzip artifacts.zip -d allure-result && ls && ls allure-result
       - run: mkdir old-report report_artifact && unzip old_report.zip -d old-report && ls && ls old-report && tar -xvf old-report/artifact.tar -C report_artifact
       - run: cp report_artifact/history/* allure-result && cp -r report_artifact/history allure-result && ls allure-result
-      - run: python -m pytest --alluredir=allure-result
-      - name: Archive allure results
-        if: always()
+      - name: Store allure history
         uses: actions/upload-artifact@v3
         with:
           name: allure-result
           path:
             allure-result
-          retention-days: 5
+          retention-days: 1
+      
+  run-tests:
+    runs-on: ubuntu-latest
+    name: Test
+    needs: download-history
+    steps:
+      - name: Check out source repository
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip install -r requirements.txt
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
+      - run: python -m pytest --alluredir=allure-result
+      - name: Store allure results
+        uses: actions/upload-artifact@v3
+        with:
+          name: allure-result
+          path:
+            allure-result
+          retention-days: 1
+
+  generate-report:
+    runs-on: ubuntu-latest
+    name: Generate report
+    needs: run-tests
+    steps:
       - uses: actions/setup-java@v3
-        if: always()
         with:
           distribution: 'microsoft' # See 'Supported distributions' for available options
           java-version: '17'
       - run: sudo wget https://github.com/allure-framework/allure2/releases/download/2.22.4/allure-2.22.4.tgz && sudo tar -zxvf allure-2.22.4.tgz -C /opt/ && sudo ln -s /opt/allure-2.22.4/bin/allure /usr/bin/allure
-        if: always()
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v3
       - run: allure generate -c allure-result -o _site
-        if: always()
-      - name: Upload Pages artifact
-        if: always()
-        uses: actions/upload-pages-artifact@v2
-      - name: Deploy to GitHub Pages
-        if: always()
-        id: deployment
-        uses: actions/deploy-pages@v1.2.9
-  artifact-test:
+      - name: Store generated report
+        uses: actions/upload-artifact@v3
+        with:
+          name: _site
+          path:
+            _site
+          retention-days: 1
+
+  publish-report:
     runs-on: ubuntu-latest
-    name: download-artifacts-test
-    needs: run-tests
+    name: Report publication
+    needs: generate-report
     steps:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
-      - run: ls
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v2
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v1.2.9
