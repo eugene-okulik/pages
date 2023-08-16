@@ -68,6 +68,7 @@ jobs:
   artifact-test:
     runs-on: ubuntu-latest
     name: download-artifacts-test
+    needs: run-tests
     steps:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v3
